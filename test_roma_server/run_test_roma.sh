@@ -32,13 +32,12 @@ MAX_RETRY=30
 
 for ((i=0;i<${MAX_RETRY};++i))
 do
-    bundle exec roma-adm 'get test' 11311
     set +e
-    bundle exec roma-adm 'get test' 11311 | grep ERROR
+    bundle exec roma-adm 'get test' 11311 2> /dev/null | grep ERROR 2> /dev/null > /dev/null
     RES=$?
     set -e
     if [ $RES -eq 1 ]; then
-        echo ROMA runs properly
+        echo ROMA has started.
         break
     fi
     echo wait for starting ROMA
@@ -49,11 +48,5 @@ if [ $i -eq ${MAX_RETRY} ]; then
     echo ROMA could not start yet
     exit 1
 fi
-
-# check each port
-for port in 11311 11411; do
-    lsof -i:${port}
-    ss | grep ${port}
-done
 
 popd
